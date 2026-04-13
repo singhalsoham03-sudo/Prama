@@ -556,7 +556,7 @@ export default function SectionPage() {
     setApiProducts([])
     try {
       const backendSection = sectionMap[section] || 'e-commerce'
-      const res = await fetch(`http://localhost:8000/api/products/${cat.id}?section=${backendSection}`)
+      const res = await fetch(`https://prama-backend-j1ol.onrender.com/api/products/${cat.id}?section=${backendSection}`)
       const data = await res.json()
       const normalized = (data.products || []).map((p, idx) => ({
         id: p.id || `api_${idx}`,

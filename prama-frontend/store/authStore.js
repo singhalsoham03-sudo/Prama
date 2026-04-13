@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-const API = 'http://localhost:8000'
+const API = 'https://prama-backend-j1ol.onrender.com'
 
 const getStored = (key) => {
   if (typeof window === 'undefined') return null
@@ -47,7 +47,7 @@ const useAuthStore = create((set, get) => ({
       set({ user: data.user, token: data.access_token, isLoggedIn: true, error: '', loading: false })
       return true
     } catch (e) {
-      set({ error: 'Cannot connect to server. Is the backend running?', loading: false })
+      set({ error: 'Cannot connect to server', loading: false })
       return false
     }
   },
@@ -68,7 +68,7 @@ const useAuthStore = create((set, get) => ({
       set({ user: data.user, token: data.access_token, isLoggedIn: true, error: '', loading: false })
       return true
     } catch (e) {
-      set({ error: 'Cannot connect to server. Is the backend running?', loading: false })
+      set({ error: 'Cannot connect to server', loading: false })
       return false
     }
   },
