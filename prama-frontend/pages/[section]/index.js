@@ -386,6 +386,8 @@ export default function SectionPage() {
   const [scannedProduct, setScannedProduct] = useState(null)
   const videoRef = useRef(null)
   const streamRef = useRef(null)
+  const barcodeDetectorRef = useRef(null)
+  const scanLoopRef = useRef(null)
 
   const leftPanelRef = useRef(null)
   const chatEndRef = useRef(null)
@@ -600,12 +602,10 @@ export default function SectionPage() {
   }
 
   const yuktiRespond = async (userMsg) => {
-    setYuktiTyping(true)
-    await delay(400)
-    const lower = userMsg.toLowerCase()
-    const keywords = config.keywords
+    setYuktiTyping(true); await delay(800)
+    const lower = userMsg.toLowerCase(); const keywords = config.keywords
 
-    // Step 1 — keyword matching first (fast, free)
+    // Find ALL matching keywords in the message
     const allMatches = []
     const usedCategories = new Set()
     for (const [key, val] of Object.entries(keywords)) {
@@ -626,109 +626,27 @@ export default function SectionPage() {
     }
 
     if (allMatches.length >= 2) {
+      // MULTI-ITEM MODE
       const names = allMatches.map(m => m.product.emoji + ' ' + m.product.name)
       const response = `🔍 Found ${allMatches.length} items! Comparing side by side:\n${names.join(', ')}\n\nSwipe through to see all comparisons →`
       setMessages(prev => [...prev, { role: 'yukti', text: response }])
       setYuktiTyping(false); playSound('yukti')
       await delay(500)
       setMultiItems(allMatches.map(m => ({ category: m.category, product: m.product })))
-      setMultiIndex(0); setView('multi')
+      setMultiIndex(0)
+      setView('multi')
       if (isMobile) setActiveTab('browse')
       if (leftPanelRef.current) leftPanelRef.current.scrollTop = 0
-      return
-    }
-
-    if (allMatches.length === 1) {
+    } else if (allMatches.length === 1) {
+      // SINGLE ITEM MODE (existing behavior)
       const matched = Object.entries(keywords).find(([key]) => lower.includes(key))
       const response = matched ? matched[1].response : ''
       setMessages(prev => [...prev, { role: 'yukti', text: response || `I can help you find the best prices in ${config.title}! 🔍` }])
       setYuktiTyping(false); playSound('yukti')
       if (matched) await yuktiNavigate(matched[1])
-      return
-    }
-
-    // Step 2 — call Claude AI when no keyword matches
-    try {
-      const apiKey = process.env.NEXT_PUBLIC_ANTHROPIC_KEY
-      console.log('Yukti AI: key loaded?', !!apiKey, 'starts with:', apiKey?.slice(0, 15))
-
-      if (!apiKey) {
-        setMessages(prev => [...prev, { role: 'yukti', text: `API key not found — check your .env.local file has NEXT_PUBLIC_ANTHROPIC_KEY set and restart the dev server. 🔧` }])
-        setYuktiTyping(false)
-        return
-      }
-
-      const categoryList = categories.map(c => `${c.id}: ${c.name}`).join(', ')
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 300,
-          system: `You are Yukti, a friendly AI price comparison assistant for Pramā — an Indian price comparison app.
-You are currently in the "${config.title}" section.
-Available categories: ${categoryList}
-
-When a user asks about a product or item:
-1. Give a short helpful response (1-2 sentences max) with a relevant emoji
-2. On the very last line, output ONLY a JSON object like: {"navigate": "category-id"}
-   Use the exact category id from the list above that best matches what they want.
-   If no category fits, use {"navigate": null}
-
-Keep responses warm, concise and Indian-context aware.`,
-          messages: [{ role: 'user', content: userMsg }],
-        }),
-      })
-
-      console.log('Anthropic status:', res.status)
-      const data = await res.json()
-      console.log('Anthropic data:', JSON.stringify(data).slice(0, 200))
-
-      if (!res.ok) {
-        console.error('Anthropic error:', data)
-        setMessages(prev => [...prev, { role: 'yukti', text: `Hmm, I had trouble connecting. Try again in a moment! 🔄` }])
-        setYuktiTyping(false)
-        playSound('yukti')
-        return
-      }
-
-      const fullText = data.content?.[0]?.text || ''
-
-      // Extract navigation from last line
-      let replyText = fullText.trim()
-      let navigateTo = null
-      const lines = fullText.trim().split('\n')
-      const lastLine = lines[lines.length - 1].trim()
-      try {
-        const parsed = JSON.parse(lastLine)
-        if (parsed.navigate !== undefined) {
-          navigateTo = parsed.navigate
-          replyText = lines.slice(0, -1).join('\n').trim()
-        }
-      } catch {}
-
-      setMessages(prev => [...prev, { role: 'yukti', text: replyText }])
-      setYuktiTyping(false)
-      playSound('yukti')
-
-      if (navigateTo) {
-        const cat = categories.find(c => c.id === navigateTo)
-        if (cat) {
-          await delay(600)
-          fetchCategoryProducts(cat)
-          await navigate('products', 'right', cat)
-        }
-      }
-    } catch (e) {
-      console.error('Yukti catch error:', e)
-      setMessages(prev => [...prev, { role: 'yukti', text: `I can help you find the best prices in ${config.title}! Try asking about specific items — I'll compare prices instantly. 🔍` }])
-      setYuktiTyping(false)
-      playSound('yukti')
+    } else {
+      setMessages(prev => [...prev, { role: 'yukti', text: `I can help you find the best prices in ${config.title}! Try asking about specific items — I'll navigate there and compare instantly. 🔍` }])
+      setYuktiTyping(false); playSound('yukti')
     }
   }
 
@@ -750,26 +668,178 @@ Keep responses warm, concise and Indian-context aware.`,
     setMultiItems([]); setMultiIndex(0); setView('categories')
   }
 
-  // Barcode Scanner
+  // Barcode Scanner — REAL scanning with BarcodeDetector API
   const openScanner = async () => {
     setScannerOpen(true); setScanPhase('camera'); setScannedProduct(null)
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
+      })
       streamRef.current = stream
-      setTimeout(() => { if (videoRef.current) videoRef.current.srcObject = stream }, 100)
+      setTimeout(() => {
+        if (videoRef.current) { videoRef.current.srcObject = stream; videoRef.current.play() }
+      }, 100)
+      if ('BarcodeDetector' in window) {
+        barcodeDetectorRef.current = new window.BarcodeDetector({
+          formats: ['ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'qr_code']
+        })
+        setTimeout(() => startScanLoop(), 600)
+      } else {
+        showToast('Auto-scan needs Chrome — tap Scan for demo mode', '⚠️')
+      }
     } catch (err) {
-      // Camera denied — still show UI, just simulate
-      console.log('Camera access denied, simulating scan')
+      showToast('Camera access denied', '❌')
     }
   }
+
+  const startScanLoop = () => {
+    const detect = async () => {
+      if (!videoRef.current || !barcodeDetectorRef.current || !streamRef.current) return
+      if (videoRef.current.readyState !== 4) { scanLoopRef.current = requestAnimationFrame(detect); return }
+      try {
+        const barcodes = await barcodeDetectorRef.current.detect(videoRef.current)
+        if (barcodes.length > 0) {
+          cancelAnimationFrame(scanLoopRef.current)
+          await handleBarcodeDetected(barcodes[0].rawValue)
+          return
+        }
+      } catch (e) {}
+      scanLoopRef.current = requestAnimationFrame(detect)
+    }
+    scanLoopRef.current = requestAnimationFrame(detect)
+  }
+
+  const indianProducts = {
+    '8901058014341': 'KitKat Chocolate Bar',
+    '8901058852456': 'KitKat 4 Finger',
+    '8902102020148': 'Cadbury Dairy Milk',
+    '8901030717520': 'Parle-G Biscuits',
+    '8901491502233': 'Maggi 2-Minute Noodles',
+    '8901030814145': 'Parle Hide & Seek Biscuits',
+    '8901499000285': "Lay's Classic Salted Chips",
+    '8901764000007': 'Kurkure Masala Munch',
+    '8901058118175': 'Munch Chocolate Bar',
+    '8901030001443': 'Monaco Biscuits',
+    '8906042950027': 'Bisleri Mineral Water',
+    '8901063100015': 'Amul Dark Chocolate',
+    '8901030847037': 'Parle Bourbon Biscuits',
+    '8901491116604': 'Maggi Masala Noodles',
+    '8901058007558': 'KitKat Dessert Delight',
+  }
+
+  const handleBarcodeDetected = async (barcode) => {
+    setScanPhase('scanning')
+    playSound('click')
+
+    // Check hardcoded Indian products first — these have no name in Open Food Facts
+    if (indianProducts[barcode]) {
+      const cat = (allCategories[section] || [])[0] || { name: 'Products', emoji: '📦', id: 'dairy' }
+      setScannedProduct({
+        product: {
+          id: `barcode_${barcode}`,
+          name: indianProducts[barcode],
+          emoji: '📦',
+          image: null,
+          quantity: '1', unit: 'unit',
+          providers: [
+            { name: 'Open Food Facts', price: 79, originalPrice: 95, unitPrice: 79, isBest: true },
+            { name: 'DummyJSON', price: 89, originalPrice: 105, unitPrice: 89, isBest: false },
+            { name: 'FakeStore', price: 94, originalPrice: 110, unitPrice: 94, isBest: false },
+          ]
+        },
+        category: cat
+      })
+      setScanPhase('found')
+      playSound('success')
+      return
+    }
+
+    try {
+      // Use v2 API with explicit fields for best reliability
+      const fields = 'product_name,product_name_en,abbreviated_product_name,generic_name,brands,quantity,image_url,image_front_url,categories_tags'
+      const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=${fields}`)
+      const data = await res.json()
+      if (data.status === 1 && data.product) {
+        const p = data.product
+        // Try every possible name field in order of preference
+        const rawName = p.product_name
+          || p.product_name_en
+          || p.abbreviated_product_name
+          || p.generic_name
+          || p.brands
+          || null
+
+        let name
+        if (rawName && rawName.trim().length > 0) {
+          // Clean up — capitalise first letter
+          name = rawName.charAt(0).toUpperCase() + rawName.slice(1).trim()
+        } else {
+          // OFF has no name — try Go UPC as second database
+          try {
+            const r2 = await fetch(`https://www.barcodelookup.com/${barcode}`)
+            // Can't scrape due to CORS — use DuckDuckGo instant answer instead
+            throw new Error('try next')
+          } catch {
+            // Final fallback — search Open Food Facts by barcode string to get brands
+            try {
+              const r3 = await fetch(`https://world.openfoodfacts.org/api/v2/product/${barcode}.json?fields=brands,product_name,abbreviated_product_name,generic_name,categories_tags`)
+              const d3 = await r3.json()
+              const pp = d3.product || {}
+              const fallbackName = pp.brands 
+                || pp.abbreviated_product_name 
+                || (pp.categories_tags?.[0]?.replace('en:', '') || null)
+              name = fallbackName 
+                ? fallbackName.charAt(0).toUpperCase() + fallbackName.slice(1)
+                : `Product (barcode: ${barcode})`
+            } catch {
+              name = `Product (barcode: ${barcode})`
+            }
+          }
+        }
+        const image = p.image_front_url || p.image_url || null
+        const cat = (allCategories[section] || [])[0] || { name: 'Products', emoji: '📦', id: 'dairy' }
+        const foundProduct = {
+          id: `barcode_${barcode}`,
+          name,
+          emoji: '📦',
+          image,
+          quantity: p.quantity || '1',
+          unit: 'unit',
+          providers: [
+            { name: 'Open Food Facts', price: 79, originalPrice: 95, unitPrice: 79, isBest: true },
+            { name: 'DummyJSON', price: 89, originalPrice: 105, unitPrice: 89, isBest: false },
+            { name: 'FakeStore', price: 94, originalPrice: 110, unitPrice: 94, isBest: false },
+          ]
+        }
+        setScannedProduct({ product: foundProduct, category: cat })
+        setScanPhase('found')
+        playSound('success')
+      } else {
+        showToast('Product not in database — try another', '❌')
+        setScanPhase('camera')
+        setTimeout(() => startScanLoop(), 1000)
+      }
+    } catch (e) {
+      showToast('Network error — check connection', '❌')
+      setScanPhase('camera')
+      setTimeout(() => startScanLoop(), 1000)
+    }
+  }
+
   const closeScanner = () => {
+    if (scanLoopRef.current) cancelAnimationFrame(scanLoopRef.current)
     if (streamRef.current) { streamRef.current.getTracks().forEach(t => t.stop()); streamRef.current = null }
+    barcodeDetectorRef.current = null
     setScannerOpen(false); setScanPhase('camera'); setScannedProduct(null)
   }
+
   const simulateScan = async () => {
+    if ('BarcodeDetector' in window) {
+      showToast('Point camera at any barcode — it scans automatically!', '📸')
+      return
+    }
     playSound('click'); setScanPhase('scanning')
-    await delay(2000) // Scanning animation
-    // Pick a random product from current section
+    await delay(2000)
     const catKeys = Object.keys(allProducts).filter(k => {
       const sectionCats = (allCategories[section] || []).map(c => c.id)
       return sectionCats.includes(k) && allProducts[k].length > 0
@@ -784,6 +854,7 @@ Keep responses warm, concise and Indian-context aware.`,
       playSound('success')
     }
   }
+
   const handleScanNavigate = async () => {
     if (!scannedProduct) return
     closeScanner()

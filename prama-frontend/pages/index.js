@@ -19,8 +19,14 @@ export default function Home() {
   const howRef = useRef(null)
 
   const { user, isLoggedIn, error: authError, loading: authLoading, hydrate: hydrateAuth, signup, login, logout, clearError } = useAuthStore()
+  const [pageLoaded, setPageLoaded] = useState(false)
+  const [heroVisible, setHeroVisible] = useState(false)
 
   useEffect(() => { hydrateAuth() }, [])
+  useEffect(() => {
+    setTimeout(() => setPageLoaded(true), 100)
+    setTimeout(() => setHeroVisible(true), 300)
+  }, [])
 
   // Load Google script
   useEffect(() => {
@@ -162,44 +168,54 @@ export default function Home() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0A0806', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#0A0806', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif', display: 'flex', flexDirection: 'column', opacity: pageLoaded ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+
+      {/* Animated grid background */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(46,125,50,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(46,125,50,0.04) 1px, transparent 1px)', backgroundSize: '60px 60px', animation: 'gridPulse 4s ease-in-out infinite' }} />
+        {[...Array(8)].map((_, i) => (
+          <div key={i} style={{ position: 'absolute', width: '3px', height: '3px', borderRadius: '50%', backgroundColor: '#4CAF50', opacity: 0.3, left: `${10 + i * 12}%`, top: `${15 + (i % 3) * 25}%`, animation: `particleFloat ${3 + i * 0.7}s ease-in-out infinite`, animationDelay: `${i * 0.4}s` }} />
+        ))}
+      </div>
 
       {/* NAVBAR */}
-      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 48px', borderBottom: '1px solid #1E1C10', backgroundColor: '#0A0806', position: 'sticky', top: 0, zIndex: 100 }}>
+      <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 48px', borderBottom: '1px solid #1E1C10', backgroundColor: 'rgba(10,8,6,0.85)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 100, transition: 'all 0.3s ease' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'linear-gradient(135deg, #2E7D32, #66BB6A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '800', color: '#fff' }}>P</div>
+          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'linear-gradient(135deg, #2E7D32, #66BB6A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '800', color: '#fff', boxShadow: '0 2px 12px rgba(46,125,50,0.4)' }}>P</div>
           <span style={{ fontSize: '22px', fontWeight: '700', color: '#F0EDE8', letterSpacing: '-0.5px' }}>Pram<span style={{ color: '#4CAF50' }}>ā</span></span>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {isLoggedIn ? (<>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff' }}>{user?.name?.charAt(0).toUpperCase()}</div>
+              <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: '#fff', boxShadow: '0 0 0 2px #4CAF5040' }}>{user?.name?.charAt(0).toUpperCase()}</div>
               <span style={{ fontSize: '14px', color: '#E8DDB8', fontWeight: '500' }}>{user?.name?.split(' ')[0]}</span>
             </div>
             <button onClick={logout} style={{ background: 'transparent', border: '1px solid #2A2810', color: '#8A7A5A', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#F44336'; e.currentTarget.style.color = '#F44336' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#2A2810'; e.currentTarget.style.color = '#8A7A5A' }}>Log out</button>
           </>) : (<>
             <button onClick={() => { setAuthMode('login'); setShowAuth(true); clearError() }} style={{ background: 'transparent', border: '1px solid #2A2810', color: '#F0EDE8', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '500', transition: 'all 0.2s ease' }} onMouseEnter={e => e.currentTarget.style.borderColor = '#4CAF50'} onMouseLeave={e => e.currentTarget.style.borderColor = '#2A2810'}>Log in</button>
-            <button onClick={() => { setAuthMode('signup'); setShowAuth(true); clearError() }} style={{ background: 'linear-gradient(135deg, #2E7D32, #388E3C)', border: 'none', color: '#fff', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', transition: 'all 0.2s ease' }} onMouseEnter={e => e.currentTarget.style.opacity = '0.9'} onMouseLeave={e => e.currentTarget.style.opacity = '1'}>Sign up</button>
+            <button onClick={() => { setAuthMode('signup'); setShowAuth(true); clearError() }} style={{ background: 'linear-gradient(135deg, #2E7D32, #388E3C)', border: 'none', color: '#fff', padding: '8px 20px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: '600', transition: 'all 0.2s ease', boxShadow: '0 4px 15px rgba(46,125,50,0.3)' }} onMouseEnter={e => { e.currentTarget.style.opacity = '0.9'; e.currentTarget.style.transform = 'translateY(-1px)' }} onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)' }}>Sign up</button>
           </>)}
         </div>
       </nav>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 1 }}>
 
         {/* HERO */}
-        <div style={{ textAlign: 'center', padding: '60px 20px 40px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', marginBottom: '8px' }}>
-            <div style={{ width: '72px', height: '72px', borderRadius: '18px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32, #43A047)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px', fontWeight: '800', color: '#fff', boxShadow: '0 8px 32px rgba(46,125,50,0.3), 0 0 0 1px rgba(76,175,80,0.2)', animation: 'logoGlow 3s ease-in-out infinite' }}>₹</div>
-            <h1 style={{ fontSize: '72px', fontWeight: '800', color: '#F0EDE8', letterSpacing: '-3px', lineHeight: '1' }}>Pram<span style={{ color: '#4CAF50' }}>ā</span></h1>
+        <div style={{ textAlign: 'center', padding: '80px 20px 48px' }}>
+          {/* Netflix-style logo entrance */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', marginBottom: '12px', animation: heroVisible ? 'logoEntrance 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards' : 'none', opacity: heroVisible ? 1 : 0 }}>
+            <div style={{ width: '80px', height: '80px', borderRadius: '20px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32, #43A047)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px', fontWeight: '800', color: '#fff', boxShadow: '0 12px 48px rgba(46,125,50,0.5), 0 0 0 1px rgba(76,175,80,0.3)', animation: 'logoGlow 3s ease-in-out infinite' }}>₹</div>
+            <h1 style={{ fontSize: '80px', fontWeight: '800', color: '#F0EDE8', letterSpacing: '-4px', lineHeight: '1', textShadow: '0 0 80px rgba(46,125,50,0.2)' }}>Pram<span style={{ color: '#4CAF50', textShadow: '0 0 40px rgba(76,175,80,0.4)' }}>ā</span></h1>
           </div>
-          <div style={{ fontSize: '15px', color: '#C8B88A', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '600', marginBottom: '28px' }}>Price Intelligence • Powered by Yukti AI</div>
+          <div style={{ fontSize: '13px', color: '#C8B88A', letterSpacing: '3px', textTransform: 'uppercase', fontWeight: '600', marginBottom: '36px', animation: heroVisible ? 'fadeUp 0.6s ease forwards' : 'none', opacity: heroVisible ? 1 : 0, animationDelay: '0.4s' }}>Price Intelligence • Powered by Yukti AI</div>
 
           {/* Rotating slogans */}
-          <div style={{ maxWidth: '580px', margin: '0 auto 48px', padding: '24px 32px 20px', backgroundColor: '#111008', border: '1px solid #E8DDB818', borderRadius: '16px', position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #2E7D32, #FFD700, #4CAF50)' }} />
-            <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '120px', height: '120px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(46,125,50,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
-            <div style={{ height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <p style={{ fontSize: '22px', fontWeight: '700', color: '#F0EDE8', letterSpacing: '-0.5px', opacity: sloganFade ? 1 : 0, transform: sloganFade ? 'translateY(0)' : 'translateY(8px)', transition: 'all 0.4s ease', textAlign: 'center' }}>{slogans[sloganIndex]}</p>
+          <div style={{ maxWidth: '580px', margin: '0 auto 56px', padding: '28px 36px 22px', backgroundColor: '#111008', border: '1px solid #E8DDB820', borderRadius: '20px', position: 'relative', overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.4)', animation: heroVisible ? 'fadeUp 0.6s ease forwards' : 'none', opacity: heroVisible ? 1 : 0, animationDelay: '0.6s' }}>
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #1B5E20, #FFD700, #4CAF50, #FFD700, #1B5E20)', backgroundSize: '200% auto', animation: 'shimmer 3s linear infinite' }} />
+            <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '160px', height: '160px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(46,125,50,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: '-40px', left: '-40px', width: '120px', height: '120px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            <div style={{ height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <p style={{ fontSize: '24px', fontWeight: '700', color: '#F0EDE8', letterSpacing: '-0.5px', opacity: sloganFade ? 1 : 0, transform: sloganFade ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.97)', transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', textAlign: 'center' }}>{slogans[sloganIndex]}</p>
             </div>
             <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginTop: '16px' }}>
               {slogans.map((_, i) => (<div key={i} style={{ width: i === sloganIndex ? '20px' : '6px', height: '6px', borderRadius: '3px', backgroundColor: i === sloganIndex ? '#4CAF50' : '#2A2810', transition: 'all 0.3s ease' }} />))}
@@ -212,21 +228,22 @@ export default function Home() {
         </div>
 
         {/* SECTION CARDS */}
-        <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', flexWrap: 'wrap', padding: '0 48px 60px', maxWidth: '1100px', margin: '0 auto' }}>
-          {sections.map((section) => (
-            <div key={section.id} onClick={() => router.push(`/${section.id}`)} style={{ backgroundColor: '#D4C9B0', border: '1px solid #BFB49A', borderRadius: '20px', padding: '36px 32px', width: '300px', cursor: 'pointer', transition: 'all 0.25s ease', position: 'relative', overflow: 'hidden' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = '#2E7D32'; e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(46,125,50,0.15)' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#BFB49A'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #2E7D32, #66BB6A)', borderRadius: '20px 20px 0 0' }} />
+        <div style={{ display: 'flex', gap: '28px', justifyContent: 'center', flexWrap: 'wrap', padding: '0 48px 70px', maxWidth: '1100px', margin: '0 auto' }}>
+          {sections.map((section, idx) => (
+            <div key={section.id} onClick={() => router.push(`/${section.id}`)} style={{ backgroundColor: '#D4C9B0', border: '1px solid #BFB49A', borderRadius: '24px', padding: '40px 32px', width: '300px', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', position: 'relative', overflow: 'hidden', animation: heroVisible ? 'cardEntrance 0.6s ease forwards' : 'none', opacity: heroVisible ? 1 : 0, animationDelay: `${0.7 + idx * 0.15}s` }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#2E7D32'; e.currentTarget.style.transform = 'translateY(-8px) scale(1.01)'; e.currentTarget.style.boxShadow = '0 24px 48px rgba(46,125,50,0.2), 0 0 0 1px rgba(46,125,50,0.1)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#BFB49A'; e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = 'none' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #1B5E20, #4CAF50, #FFD700, #4CAF50, #1B5E20)', backgroundSize: '200% auto', animation: 'shimmer 3s linear infinite', borderRadius: '24px 24px 0 0' }} />
+              <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '100px', height: '100px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(46,125,50,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
               <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#1A1A1A', marginBottom: '6px', letterSpacing: '-0.3px' }}>{section.title}</h2>
               <p style={{ fontSize: '13px', color: '#2E7D32', fontWeight: '600', marginBottom: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{section.subtitle}</p>
-              <p style={{ fontSize: '14px', color: '#3D3D3D', lineHeight: '1.6', marginBottom: '24px' }}>{section.description}</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '24px' }}>
-                {section.providers.map((p, i) => (<span key={i} style={{ fontSize: '11px', fontWeight: '500', padding: '4px 10px', borderRadius: '20px', backgroundColor: '#1A2E1A', color: '#66BB6A', border: '1px solid #2E7D32' }}>{p}</span>))}
+              <p style={{ fontSize: '14px', color: '#3D3D3D', lineHeight: '1.7', marginBottom: '24px' }}>{section.description}</p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '28px' }}>
+                {section.providers.map((p, i) => (<span key={i} style={{ fontSize: '11px', fontWeight: '600', padding: '5px 12px', borderRadius: '20px', backgroundColor: '#1A2E1A', color: '#66BB6A', border: '1px solid #2E7D3260' }}>{p}</span>))}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '14px', fontWeight: '600', color: '#1A1A1A' }}>Explore →</span>
-                <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'linear-gradient(135deg, #2E7D32, #388E3C)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '16px' }}>→</div>
+                <span style={{ fontSize: '14px', fontWeight: '700', color: '#1A1A1A' }}>Explore →</span>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #2E7D32, #388E3C)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '16px', boxShadow: '0 4px 12px rgba(46,125,50,0.4)' }}>→</div>
               </div>
             </div>
           ))}
@@ -377,13 +394,21 @@ export default function Home() {
       )}
 
       <style>{`
-        @keyframes logoGlow { 0%, 100% { box-shadow: 0 8px 32px rgba(46,125,50,0.3), 0 0 0 1px rgba(76,175,80,0.2); } 50% { box-shadow: 0 8px 40px rgba(46,125,50,0.5), 0 0 0 1px rgba(76,175,80,0.4); } }
+        @keyframes logoGlow { 0%, 100% { box-shadow: 0 8px 32px rgba(46,125,50,0.3), 0 0 0 1px rgba(76,175,80,0.2); } 50% { box-shadow: 0 8px 48px rgba(46,125,50,0.6), 0 0 0 1px rgba(76,175,80,0.5), 0 0 80px rgba(46,125,50,0.15); } }
+        @keyframes logoEntrance { 0% { transform: scale(0.3) translateY(30px); opacity: 0; filter: blur(10px); } 60% { transform: scale(1.08) translateY(-4px); opacity: 1; filter: blur(0); } 100% { transform: scale(1) translateY(0); opacity: 1; filter: blur(0); } }
+        @keyframes titleEntrance { 0% { transform: translateY(40px); opacity: 0; filter: blur(6px); } 100% { transform: translateY(0); opacity: 1; filter: blur(0); } }
+        @keyframes fadeUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
         @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes tickerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes modalPop { from { transform: scale(0.92) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes shimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        @keyframes cardEntrance { 0% { transform: translateY(30px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        @keyframes particleFloat { 0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; } 33% { transform: translateY(-20px) translateX(10px); opacity: 0.6; } 66% { transform: translateY(-10px) translateX(-8px); opacity: 0.4; } }
+        @keyframes gridPulse { 0%, 100% { opacity: 0.03; } 50% { opacity: 0.07; } }
+        @keyframes borderGlow { 0%, 100% { border-color: #BFB49A; } 50% { border-color: #4CAF5060; } }
       `}</style>
     </div>
   )
