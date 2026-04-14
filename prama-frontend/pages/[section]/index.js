@@ -917,8 +917,13 @@ export default function SectionPage() {
       {/* Navbar */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 24px', borderBottom: '1px solid #1E1C10', backgroundColor: '#080806', flexShrink: 0, zIndex: 100 }}>
         <div onClick={() => router.push('/')} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-          <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'linear-gradient(135deg, #2E7D32, #66BB6A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: '800', color: '#fff' }}>P</div>
-          <span style={{ fontSize: '19px', fontWeight: '700', color: '#F0EDE8', letterSpacing: '-0.5px' }}>Pram<span style={{ color: '#4CAF50' }}>ā</span></span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+            <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: '900', color: '#FFD700', boxShadow: '0 2px 12px rgba(46,125,50,0.4)', border: '1px solid rgba(76,175,80,0.3)', letterSpacing: '-1px' }}>₹</div>
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, paddingLeft: '6px' }}>
+              <span style={{ fontSize: '17px', fontWeight: '800', color: '#F0EDE8', letterSpacing: '-0.5px' }}>pram<span style={{ color: '#4CAF50' }}>ā</span></span>
+              <span style={{ fontSize: '8px', color: '#5A4A2A', fontWeight: '600', letterSpacing: '1.5px', textTransform: 'uppercase' }}>price intel</span>
+            </div>
+          </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontSize: '13px', color: '#FFD700', fontWeight: '600' }}>{config.title}</span>
@@ -934,29 +939,56 @@ export default function SectionPage() {
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
         {/* LEFT — YUKTI */}
         <div style={{ width: yuktiWidth, flexShrink: 0, backgroundColor: '#0C0A06', display: isMobile && activeTab !== 'yukti' ? 'none' : 'flex', flexDirection: 'column', borderRight: '1px solid #1E1C10', overflow: 'hidden' }}>
-          <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid #2A2810', background: 'linear-gradient(180deg, #141008 0%, #0C0A06 100%)', flexShrink: 0, textAlign: 'center' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32, #43A047)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 10px', boxShadow: '0 4px 20px rgba(46,125,50,0.3)', fontSize: '24px', fontWeight: '800', color: '#fff', border: '1.5px solid #4CAF5050' }}>₹</div>
-            <div style={{ fontSize: '17px', fontWeight: '700', color: '#F0EDE8', marginBottom: '2px' }}>Yukti</div>
-            <div style={{ fontSize: '11px', color: '#4CAF50', marginBottom: '14px' }}>● Pramā's price intelligence AI</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
-              {config.prompts.map((prompt, i) => (<div key={i} onClick={() => handleSuggestion({ text: prompt.text, query: prompt.text })} style={{ backgroundColor: '#1A1610', border: '1px solid #2A2810', borderRadius: '10px', padding: '9px 12px', fontSize: '12px', color: '#C8B88A', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.15s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.backgroundColor = '#221E14'; e.currentTarget.style.color = '#F0EDE8' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#2A2810'; e.currentTarget.style.backgroundColor = '#1A1610'; e.currentTarget.style.color = '#C8B88A' }}><span style={{ fontSize: '14px', flexShrink: 0 }}>{prompt.icon}</span><span style={{ lineHeight: '1.4' }}>{prompt.text}</span></div>))}
+          {/* YUKTI HEADER */}
+          <div style={{ padding: '14px 14px 10px', borderBottom: '1px solid #1A1810', background: 'linear-gradient(180deg, #0E0C06 0%, #0C0A06 100%)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <div style={{ position: 'relative', flexShrink: 0 }}>
+                <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32, #43A047)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '19px', fontWeight: '900', color: '#FFD700', border: '1.5px solid rgba(76,175,80,0.4)', boxShadow: '0 4px 16px rgba(46,125,50,0.3)', animation: 'yuktiPulse 3s ease-in-out infinite' }}>₹</div>
+                <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#4CAF50', border: '2px solid #0C0A06' }} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontSize: '15px', fontWeight: '800', color: '#F0EDE8' }}>Yukti</span>
+                  <span style={{ fontSize: '9px', backgroundColor: '#0A1F0A', border: '1px solid rgba(76,175,80,0.35)', color: '#4CAF50', padding: '2px 6px', borderRadius: '4px', fontWeight: '700', letterSpacing: '0.5px' }}>AI</span>
+                </div>
+                <div style={{ fontSize: '10px', color: '#4A5A4A', marginTop: '1px' }}>Price Intelligence • Always on</div>
+              </div>
+              <button onClick={openScanner} title="Scan barcode" style={{ backgroundColor: '#141210', border: '1px solid #2A2810', color: '#6A5A4A', width: '34px', height: '34px', borderRadius: '9px', cursor: 'pointer', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.color = '#4CAF50'; e.currentTarget.style.backgroundColor = '#0A1F0A' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#2A2810'; e.currentTarget.style.color = '#6A5A4A'; e.currentTarget.style.backgroundColor = '#141210' }}>📷</button>
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              {config.prompts.map((prompt, i) => (
+                <div key={i} onClick={() => handleSuggestion({ text: prompt.text, query: prompt.text })}
+                  style={{ backgroundColor: '#111008', border: '1px solid #262210', borderRadius: '20px', padding: '4px 10px', fontSize: '11px', color: '#A89870', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', transition: 'all 0.15s ease' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.backgroundColor = '#0A1F0A'; e.currentTarget.style.color = '#A5D6A7' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#262210'; e.currentTarget.style.backgroundColor = '#111008'; e.currentTarget.style.color = '#A89870' }}>
+                  <span style={{ fontSize: '11px' }}>{prompt.icon}</span><span>{prompt.text}</span>
+                </div>
+              ))}
             </div>
           </div>
-          <div style={{ padding: '10px 14px', borderBottom: '1px solid #2A2810', display: 'flex', gap: '8px', overflowX: 'auto', scrollbarWidth: 'none', flexShrink: 0, backgroundColor: '#0A0806' }}>
-            {config.suggestions.map((s, i) => (<div key={i} onClick={() => handleSuggestion(s)} style={{ flexShrink: 0, cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #1A1810, #221E14)', border: '1px solid #3A3020', borderRadius: '20px', padding: '6px 12px 6px 6px', transition: 'all 0.2s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(76,175,80,0.2)' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#3A3020'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)' }}><div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', border: '1.5px solid #4CAF5040', flexShrink: 0 }}><img src={s.image} alt={s.text} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div><span style={{ fontSize: '11px', color: '#E8DDB8', fontWeight: '600', whiteSpace: 'nowrap' }}>{s.text}</span></div>))}
+          {/* SUGGESTIONS ROW */}
+          <div style={{ padding: '8px 12px', borderBottom: '1px solid #1A1810', display: 'flex', gap: '6px', overflowX: 'auto', scrollbarWidth: 'none', flexShrink: 0, backgroundColor: '#0A0806' }}>
+            {config.suggestions.map((s, i) => (<div key={i} onClick={() => handleSuggestion(s)} style={{ flexShrink: 0, cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '7px', background: '#141210', border: '1px solid #262210', borderRadius: '20px', padding: '5px 10px 5px 5px', transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.transform = 'translateY(-1px)' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#262210'; e.currentTarget.style.transform = 'translateY(0)' }}><div style={{ width: '28px', height: '28px', borderRadius: '50%', overflow: 'hidden', border: '1.5px solid #4CAF5030', flexShrink: 0 }}><img src={s.image} alt={s.text} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div><span style={{ fontSize: '11px', color: '#D4C9A0', fontWeight: '600', whiteSpace: 'nowrap' }}>{s.text}</span></div>))}
           </div>
-          <div style={{ flex: 1, overflowY: 'auto', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#0C0A06' }}>
-            {messages.map((msg, i) => (<div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: '8px' }}>
-              {msg.role === 'yukti' && <div style={{ width: '26px', height: '26px', borderRadius: '7px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#fff', fontWeight: '800', flexShrink: 0 }}>₹</div>}
-              <div style={{ maxWidth: '80%', backgroundColor: msg.role === 'user' ? '#1A3A1A' : '#1E1C10', border: `1px solid ${msg.role === 'user' ? '#2E7D32' : '#E8DDB820'}`, borderRadius: msg.role === 'user' ? '14px 14px 2px 14px' : '14px 14px 14px 2px', padding: '10px 13px', fontSize: '13px', color: msg.role === 'user' ? '#C8E6C9' : '#E8DDB8', lineHeight: '1.6' }}>{msg.role === 'yukti' && <div style={{ fontSize: '9px', color: '#4CAF50', fontWeight: '700', marginBottom: '4px', letterSpacing: '1px' }}>YUKTI</div>}{msg.text}</div>
+          {/* CHAT MESSAGES */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '14px 12px', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#0A0806', backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(46,125,50,0.04) 0%, transparent 60%)' }}>
+            {messages.map((msg, i) => (<div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: '8px', animation: 'messageIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards' }}>
+              {msg.role === 'yukti' && <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#FFD700', fontWeight: '900', flexShrink: 0, boxShadow: '0 2px 8px rgba(46,125,50,0.25)' }}>₹</div>}
+              <div style={{ maxWidth: '82%', backgroundColor: msg.role === 'user' ? '#162816' : '#161410', border: `1px solid ${msg.role === 'user' ? 'rgba(76,175,80,0.25)' : 'rgba(232,221,184,0.1)'}`, borderRadius: msg.role === 'user' ? '16px 16px 2px 16px' : '16px 16px 16px 2px', padding: '10px 13px', fontSize: '13px', color: msg.role === 'user' ? '#B8D4B8' : '#D8D0C0', lineHeight: '1.65', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}>{msg.role === 'yukti' && <div style={{ fontSize: '9px', color: '#4CAF50', fontWeight: '700', marginBottom: '4px', letterSpacing: '1px' }}>YUKTI ✦</div>}{msg.text}</div>
+              {msg.role === 'user' && <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#1A2A1A', border: '1px solid rgba(76,175,80,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', flexShrink: 0 }}>👤</div>}
             </div>))}
-            {yuktiTyping && <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}><div style={{ width: '26px', height: '26px', borderRadius: '7px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', color: '#fff', fontWeight: '800', flexShrink: 0 }}>₹</div><div style={{ backgroundColor: '#1E1C10', border: '1px solid #E8DDB820', borderRadius: '14px 14px 14px 2px', padding: '12px 16px', display: 'flex', gap: '5px', alignItems: 'center' }}>{[0, 1, 2].map(j => <div key={j} style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4CAF50', animation: `pulse 1.2s ease-in-out ${j * 0.2}s infinite` }} />)}</div></div>}
+            {yuktiTyping && <div style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', color: '#FFD700', fontWeight: '900', flexShrink: 0 }}>₹</div>
+              <div style={{ backgroundColor: '#161410', border: '1px solid rgba(232,221,184,0.1)', borderRadius: '16px 16px 16px 2px', padding: '12px 16px', display: 'flex', gap: '5px', alignItems: 'center' }}>
+                {[0,1,2].map(j => <div key={j} style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#4CAF50', animation: `dotBounce 1.4s ease-in-out ${j*0.16}s infinite` }} />)}
+              </div>
+            </div>}
             <div ref={chatEndRef} />
           </div>
-          <div style={{ padding: '12px 14px', borderTop: '1px solid #2A2810', display: 'flex', gap: '8px', backgroundColor: '#0A0806', flexShrink: 0 }}>
-            <button onClick={openScanner} title="Scan barcode" style={{ backgroundColor: '#1A1610', border: '1px solid #2A2810', color: '#8A7A5A', width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, transition: 'all 0.2s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.color = '#4CAF50' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#2A2810'; e.currentTarget.style.color = '#8A7A5A' }}>📷</button>
-            <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSend()} placeholder={section === 'food' ? 'What are you craving? Ask Yukti...' : section === 'ecommerce' ? 'Find a product, compare prices...' : 'Find cheapest groceries...'} style={{ flex: 1, backgroundColor: '#1A1610', border: '1px solid #2A2810', borderRadius: '10px', padding: '10px 14px', color: '#E8DDB8', fontSize: '13px', outline: 'none' }} onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#2A2810'} />
-            <button onClick={handleSend} style={{ backgroundColor: '#2E7D32', border: 'none', color: '#fff', width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', fontSize: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.backgroundColor = '#388E3C'} onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2E7D32'}>→</button>
+          {/* INPUT BAR */}
+          <div style={{ padding: '10px 12px', borderTop: '1px solid #1A1810', display: 'flex', gap: '8px', backgroundColor: '#080806', flexShrink: 0 }}>
+            <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSend()} placeholder={section === 'food' ? 'What are you craving?' : section === 'ecommerce' ? 'Find a product...' : 'Find cheapest groceries...'} style={{ flex: 1, backgroundColor: '#111008', border: '1px solid #262210', borderRadius: '12px', padding: '11px 16px', color: '#E8DDB8', fontSize: '13px', outline: 'none', transition: 'border-color 0.2s' }} onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#262210'} />
+            <button onClick={handleSend} style={{ background: 'linear-gradient(135deg, #2E7D32, #43A047)', border: 'none', color: '#fff', width: '42px', height: '42px', borderRadius: '12px', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 4px 12px rgba(46,125,50,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>↑</button>
           </div>
         </div>
 
@@ -1549,7 +1581,40 @@ export default function SectionPage() {
 
               {/* Actions */}
               <button onClick={handleCloseCheckout} style={{ width: '100%', backgroundColor: '#2E7D32', border: 'none', color: '#fff', padding: '14px', borderRadius: '10px', fontSize: '14px', fontWeight: '700', cursor: 'pointer', marginBottom: '8px' }} onMouseEnter={e => e.currentTarget.style.backgroundColor = '#388E3C'} onMouseLeave={e => e.currentTarget.style.backgroundColor = '#2E7D32'}>Continue Shopping</button>
-              <button style={{ width: '100%', backgroundColor: 'transparent', border: '1px solid #E8DDB820', color: '#C8B88A', padding: '12px', borderRadius: '10px', fontSize: '13px', fontWeight: '600', cursor: 'pointer' }}>📦 Track Order</button>
+              {(() => {
+                const steps = [
+                  { icon: '✅', label: 'Order Placed', done: true, time: 'Just now' },
+                  { icon: '⏳', label: 'Confirming with store', done: true, time: '1 min' },
+                  { icon: '🏪', label: 'Store preparing order', done: false, time: 'Est. 5 min' },
+                  { icon: '🛵', label: 'Out for delivery', done: false, time: 'Est. 15 min' },
+                  { icon: '🏠', label: 'Delivered', done: false, time: 'Est. 30 min' },
+                ]
+                return (
+                  <div style={{ backgroundColor: '#0E0C08', border: '1px solid #2A2810', borderRadius: '12px', padding: '16px', marginTop: '4px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '700', color: '#4CAF50', marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4CAF50', animation: 'pulse 1.5s ease-in-out infinite' }} />
+                      LIVE TRACKING
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                      <div style={{ position: 'absolute', left: '15px', top: '16px', bottom: '16px', width: '2px', background: 'linear-gradient(to bottom, #4CAF50 40%, #2A2810 40%)' }} />
+                      {steps.map((step, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: i < steps.length - 1 ? '16px' : '0', position: 'relative' }}>
+                          <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: step.done ? '#0A1F0A' : '#111008', border: `2px solid ${step.done ? '#4CAF50' : '#2A2810'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0, zIndex: 1 }}>{step.icon}</div>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '12px', fontWeight: '600', color: step.done ? '#F0EDE8' : '#5A4A2A' }}>{step.label}</div>
+                            <div style={{ fontSize: '10px', color: step.done ? '#4CAF50' : '#3A3020', marginTop: '1px' }}>{step.time}</div>
+                          </div>
+                          {i === 1 && <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#FFD700', animation: 'pulse 1s ease-in-out infinite', flexShrink: 0 }} />}
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ marginTop: '14px', borderTop: '1px solid #1E1C10', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '11px', color: '#8A7A5A' }}>Order ID: {orderResult.orderId}</span>
+                      <span style={{ fontSize: '11px', color: '#FFD700', fontWeight: '600' }}>Est. 25-30 min</span>
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
           </div>}
         </div>

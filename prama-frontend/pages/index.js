@@ -181,8 +181,13 @@ export default function Home() {
       {/* NAVBAR */}
       <nav style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 48px', borderBottom: '1px solid #1E1C10', backgroundColor: 'rgba(10,8,6,0.85)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 100, transition: 'all 0.3s ease' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'linear-gradient(135deg, #2E7D32, #66BB6A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: '800', color: '#fff', boxShadow: '0 2px 12px rgba(46,125,50,0.4)' }}>P</div>
-          <span style={{ fontSize: '22px', fontWeight: '700', color: '#F0EDE8', letterSpacing: '-0.5px' }}>Pram<span style={{ color: '#4CAF50' }}>ā</span></span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32, #43A047)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: '900', color: '#FFD700', boxShadow: '0 2px 12px rgba(46,125,50,0.4)', border: '1px solid rgba(76,175,80,0.3)' }}>₹</div>
+            <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1, paddingLeft: '7px' }}>
+              <span style={{ fontSize: '20px', fontWeight: '800', color: '#F0EDE8', letterSpacing: '-0.5px' }}>pram<span style={{ color: '#4CAF50' }}>ā</span></span>
+              <span style={{ fontSize: '8px', color: '#5A4A2A', fontWeight: '600', letterSpacing: '1.5px', textTransform: 'uppercase' }}>price intel</span>
+            </div>
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           {isLoggedIn ? (<>
@@ -331,19 +336,28 @@ export default function Home() {
       {/* AUTH MODAL */}
       {showAuth && (
         <div onClick={() => { setShowAuth(false); clearError() }} style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div onClick={e => e.stopPropagation()} style={{ backgroundColor: '#0E0C08', border: '1px solid #E8DDB815', borderRadius: '16px', padding: '40px', width: '400px', position: 'relative', animation: 'modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1)' }}>
-            <button onClick={() => { setShowAuth(false); clearError() }} style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', color: '#9E9E9E', fontSize: '20px', cursor: 'pointer' }}>×</button>
+          <div onClick={e => e.stopPropagation()} style={{ backgroundColor: '#0A0806', border: '1px solid #2A2810', borderRadius: '20px', width: '420px', position: 'relative', animation: 'modalPop 0.3s cubic-bezier(0.34,1.56,0.64,1)', overflow: 'hidden', boxShadow: '0 24px 80px rgba(0,0,0,0.6)' }}>
+            {/* Top accent bar */}
+            <div style={{ height: '3px', background: 'linear-gradient(90deg, #1B5E20, #4CAF50, #FFD700, #4CAF50, #1B5E20)' }} />
+            <button onClick={() => { setShowAuth(false); clearError() }} style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(255,255,255,0.05)', border: '1px solid #2A2810', color: '#9E9E9E', width: '28px', height: '28px', borderRadius: '7px', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(244,67,54,0.1)'} onMouseLeave={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'}>×</button>
 
-            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-              <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'linear-gradient(135deg, #2E7D32, #66BB6A)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '800', color: '#fff', margin: '0 auto 16px' }}>P</div>
-              <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#F0EDE8', marginBottom: '8px' }}>{authMode === 'login' ? 'Welcome back' : 'Create account'}</h2>
-              <p style={{ fontSize: '14px', color: '#8A7A5A' }}>{authMode === 'login' ? 'Log in to your Pramā account' : 'Start comparing smarter today'}</p>
+            {/* Header */}
+            <div style={{ padding: '28px 32px 20px', textAlign: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '16px' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '11px', background: 'linear-gradient(135deg, #1B5E20, #2E7D32, #43A047)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: '900', color: '#FFD700', boxShadow: '0 4px 16px rgba(46,125,50,0.35)' }}>₹</div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: '800', color: '#F0EDE8', letterSpacing: '-0.5px' }}>pram<span style={{ color: '#4CAF50' }}>ā</span></div>
+                  <div style={{ fontSize: '9px', color: '#5A4A2A', letterSpacing: '1.5px', textTransform: 'uppercase' }}>price intelligence</div>
+                </div>
+              </div>
+              <h2 style={{ fontSize: '22px', fontWeight: '700', color: '#F0EDE8', marginBottom: '6px' }}>{authMode === 'login' ? 'Welcome back 👋' : 'Join Pramā today'}</h2>
+              <p style={{ fontSize: '13px', color: '#6A5A3A' }}>{authMode === 'login' ? 'Log in to compare prices and save more' : 'Start saving ₹400+ every month'}</p>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div style={{ padding: '0 32px 28px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
-              {/* ✅ Google Button */}
-              <button onClick={openGooglePopup} style={{ width: '100%', backgroundColor: '#fff', border: '1px solid #E0E0E0', borderRadius: '10px', padding: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', color: '#1A1A1A', transition: 'all 0.2s ease' }} onMouseEnter={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)'} onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}>
+              {/* Google button */}
+              <button onClick={openGooglePopup} style={{ width: '100%', backgroundColor: '#fff', border: '1px solid #E0E0E0', borderRadius: '12px', padding: '13px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', color: '#1A1A1A', transition: 'all 0.2s ease', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }} onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)'; e.currentTarget.style.transform = 'translateY(-1px)' }} onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(0)' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -355,38 +369,43 @@ export default function Home() {
 
               {/* Divider */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ flex: 1, height: '1px', backgroundColor: '#2A2810' }} />
-                <span style={{ fontSize: '12px', color: '#5A4A2A' }}>or continue with email</span>
-                <div style={{ flex: 1, height: '1px', backgroundColor: '#2A2810' }} />
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#1E1C10' }} />
+                <span style={{ fontSize: '11px', color: '#4A3A2A', fontWeight: '500' }}>or with email</span>
+                <div style={{ flex: 1, height: '1px', backgroundColor: '#1E1C10' }} />
               </div>
 
-              {/* Email fields */}
+              {/* Inputs */}
               {authMode === 'signup' && (
-                <input type="text" placeholder="Full name" value={authName}
-                  onChange={e => { setAuthName(e.target.value); clearError() }}
-                  style={{ backgroundColor: '#1A1610', border: '1px solid #2A2810', borderRadius: '10px', padding: '14px 16px', color: '#E8DDB8', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box' }}
-                  onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#2A2810'} />
+                <div style={{ position: 'relative' }}>
+                  <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '16px', pointerEvents: 'none' }}>👤</span>
+                  <input type="text" placeholder="Full name" value={authName} onChange={e => { setAuthName(e.target.value); clearError() }}
+                    style={{ backgroundColor: '#111008', border: '1px solid #262210', borderRadius: '12px', padding: '13px 16px 13px 40px', color: '#E8DDB8', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                    onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#262210'} />
+                </div>
               )}
-              <input type="email" placeholder="Email address" value={authEmail}
-                onChange={e => { setAuthEmail(e.target.value); clearError() }}
-                style={{ backgroundColor: '#1A1610', border: '1px solid #2A2810', borderRadius: '10px', padding: '14px 16px', color: '#E8DDB8', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box' }}
-                onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#2A2810'} />
-              <input type="password" placeholder="Password" value={authPassword}
-                onChange={e => { setAuthPassword(e.target.value); clearError() }}
-                onKeyDown={handleKeyDown}
-                style={{ backgroundColor: '#1A1610', border: '1px solid #2A2810', borderRadius: '10px', padding: '14px 16px', color: '#E8DDB8', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box' }}
-                onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#2A2810'} />
+              <div style={{ position: 'relative' }}>
+                <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '16px', pointerEvents: 'none' }}>✉️</span>
+                <input type="email" placeholder="Email address" value={authEmail} onChange={e => { setAuthEmail(e.target.value); clearError() }}
+                  style={{ backgroundColor: '#111008', border: '1px solid #262210', borderRadius: '12px', padding: '13px 16px 13px 40px', color: '#E8DDB8', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                  onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#262210'} />
+              </div>
+              <div style={{ position: 'relative' }}>
+                <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '16px', pointerEvents: 'none' }}>🔒</span>
+                <input type="password" placeholder="Password" value={authPassword} onChange={e => { setAuthPassword(e.target.value); clearError() }} onKeyDown={handleKeyDown}
+                  style={{ backgroundColor: '#111008', border: '1px solid #262210', borderRadius: '12px', padding: '13px 16px 13px 40px', color: '#E8DDB8', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box', transition: 'border-color 0.2s' }}
+                  onFocus={e => e.target.style.borderColor = '#4CAF50'} onBlur={e => e.target.style.borderColor = '#262210'} />
+              </div>
 
-              {authError && <div style={{ fontSize: '12px', color: '#F44336', textAlign: 'center', padding: '4px 0' }}>{authError}</div>}
+              {authError && <div style={{ fontSize: '12px', color: '#F44336', backgroundColor: 'rgba(244,67,54,0.08)', border: '1px solid rgba(244,67,54,0.2)', borderRadius: '8px', padding: '8px 12px', textAlign: 'center' }}>{authError}</div>}
 
-              <button onClick={handleAuth} disabled={authLoading} style={{ background: authLoading ? '#1A3A1A' : 'linear-gradient(135deg, #2E7D32, #388E3C)', border: 'none', color: '#fff', padding: '14px', borderRadius: '10px', fontSize: '15px', fontWeight: '600', cursor: authLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: authLoading ? 0.8 : 1 }}>
+              <button onClick={handleAuth} disabled={authLoading} style={{ background: authLoading ? '#1A2A1A' : 'linear-gradient(135deg, #2E7D32, #43A047)', border: 'none', color: '#fff', padding: '14px', borderRadius: '12px', fontSize: '15px', fontWeight: '700', cursor: authLoading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', opacity: authLoading ? 0.8 : 1, boxShadow: authLoading ? 'none' : '0 4px 16px rgba(46,125,50,0.35)', transition: 'all 0.2s' }} onMouseEnter={e => { if (!authLoading) { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(46,125,50,0.45)' } }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = authLoading ? 'none' : '0 4px 16px rgba(46,125,50,0.35)' }}>
                 {authLoading && <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />}
-                {authLoading ? (authMode === 'login' ? 'Logging in...' : 'Creating account...') : (authMode === 'login' ? 'Log in' : 'Create account')}
+                {authLoading ? (authMode === 'login' ? 'Logging in...' : 'Creating account...') : (authMode === 'login' ? '→ Log in to Pramā' : '→ Create free account')}
               </button>
 
-              <p style={{ textAlign: 'center', fontSize: '14px', color: '#8A7A5A' }}>
-                {authMode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-                <span onClick={() => { setAuthMode(authMode === 'login' ? 'signup' : 'login'); clearError() }} style={{ color: '#4CAF50', cursor: 'pointer', fontWeight: '500' }}>{authMode === 'login' ? 'Sign up' : 'Log in'}</span>
+              <p style={{ textAlign: 'center', fontSize: '13px', color: '#6A5A3A', margin: 0 }}>
+                {authMode === 'login' ? "New here? " : 'Already have an account? '}
+                <span onClick={() => { setAuthMode(authMode === 'login' ? 'signup' : 'login'); clearError() }} style={{ color: '#4CAF50', cursor: 'pointer', fontWeight: '600', textDecoration: 'underline', textUnderlineOffset: '2px' }}>{authMode === 'login' ? 'Create an account' : 'Log in'}</span>
               </p>
             </div>
           </div>
