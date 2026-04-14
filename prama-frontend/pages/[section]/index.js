@@ -510,6 +510,9 @@ export default function SectionPage() {
       if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(paymentForm.cardExpiry)) errors.cardExpiry = 'Use MM/YY format'
       if (!/^\d{3}$/.test(paymentForm.cardCvv)) errors.cardCvv = '3 digits'
     }
+    if (paymentTab === 'cod') {
+      // No validation needed for COD
+    }
     if (paymentTab === 'netbanking') {
       if (!paymentForm.bank) errors.bank = 'Select a bank'
     }
@@ -518,7 +521,7 @@ export default function SectionPage() {
     if (Object.keys(errors).length > 0) { showToast('Please fix the errors', '⚠️'); return }
     setPaymentProcessing(true)
     await delay(2500)
-    const method = paymentTab === 'upi' ? `UPI (${paymentForm.upiId})` : paymentTab === 'card' ? `Card ****${paymentForm.cardNumber.slice(-4)}` : `Net Banking (${paymentForm.bank})`
+    const method = paymentTab === 'upi' ? `UPI (${paymentForm.upiId})` : paymentTab === 'card' ? `Card ****${paymentForm.cardNumber.slice(-4)}` : paymentTab === 'cod' ? 'Cash on Delivery' : `Net Banking (${paymentForm.bank})`
     const order = completeOrder(method)
     setOrderResult(order)
     setPaymentProcessing(false)
@@ -940,7 +943,7 @@ export default function SectionPage() {
             </div>
           </div>
           <div style={{ padding: '10px 14px', borderBottom: '1px solid #2A2810', display: 'flex', gap: '8px', overflowX: 'auto', scrollbarWidth: 'none', flexShrink: 0, backgroundColor: '#0A0806' }}>
-            {config.suggestions.map((s, i) => (<div key={i} onClick={() => handleSuggestion(s)} style={{ flexShrink: 0, backgroundColor: '#1A1610', border: '1px solid #2A2810', borderRadius: '12px', padding: '8px 10px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px', width: '80px', transition: 'all 0.15s ease' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.backgroundColor = '#221E14' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#2A2810'; e.currentTarget.style.backgroundColor = '#1A1610' }}><div style={{ width: '44px', height: '44px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #2A2810' }}><img src={s.image} alt={s.text} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div><span style={{ fontSize: '10px', color: '#C8B88A', textAlign: 'center', lineHeight: '1.3', fontWeight: '500' }}>{s.text}</span></div>))}
+            {config.suggestions.map((s, i) => (<div key={i} onClick={() => handleSuggestion(s)} style={{ flexShrink: 0, cursor: 'pointer', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #1A1810, #221E14)', border: '1px solid #3A3020', borderRadius: '20px', padding: '6px 12px 6px 6px', transition: 'all 0.2s ease', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }} onMouseEnter={e => { e.currentTarget.style.borderColor = '#4CAF50'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(76,175,80,0.2)' }} onMouseLeave={e => { e.currentTarget.style.borderColor = '#3A3020'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)' }}><div style={{ width: '32px', height: '32px', borderRadius: '50%', overflow: 'hidden', border: '1.5px solid #4CAF5040', flexShrink: 0 }}><img src={s.image} alt={s.text} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></div><span style={{ fontSize: '11px', color: '#E8DDB8', fontWeight: '600', whiteSpace: 'nowrap' }}>{s.text}</span></div>))}
           </div>
           <div style={{ flex: 1, overflowY: 'auto', padding: '14px', display: 'flex', flexDirection: 'column', gap: '10px', backgroundColor: '#0C0A06' }}>
             {messages.map((msg, i) => (<div key={i} style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start', alignItems: 'flex-end', gap: '8px' }}>
@@ -1016,7 +1019,7 @@ export default function SectionPage() {
               <div style={{ backgroundColor: '#1C1A0E', border: '1px solid #E8DDB820', borderRadius: '8px', padding: '8px 12px', marginBottom: '12px', fontSize: '11px', color: '#C8B88A' }}>💡 Sorted cheapest first — green = best value</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {[...selectedProduct.providers].sort((a, b) => a.unitPrice - b.unitPrice).map((provider, i) => (
-                  <div key={i} style={{ backgroundColor: provider.isBest ? '#0A1F0A' : '#111008', border: `1.5px solid ${provider.isBest ? '#4CAF50' : '#2A2810'}`, borderRadius: '12px', padding: '14px', position: 'relative' }}>
+                  <div key={i} style={{ backgroundColor: provider.isBest ? '#0D2B0D' : '#1A1810', border: `1.5px solid ${provider.isBest ? '#4CAF50' : '#3A3428'}`, borderRadius: '14px', padding: '16px', position: 'relative', boxShadow: provider.isBest ? '0 4px 20px rgba(76,175,80,0.15)' : '0 2px 8px rgba(0,0,0,0.2)' }}>
                     {provider.isBest && <div style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: '#4CAF50', color: '#fff', fontSize: '9px', fontWeight: '700', padding: '2px 7px', borderRadius: '5px' }}>BEST VALUE ✓</div>}
                     {i === 0 && !provider.isBest && <div style={{ position: 'absolute', top: '10px', right: '10px', backgroundColor: '#FFD700', color: '#080806', fontSize: '9px', fontWeight: '700', padding: '2px 7px', borderRadius: '5px' }}>LOWEST PRICE</div>}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}><div style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: provider.isBest ? '#4CAF50' : '#5A4A2A' }} /><span style={{ fontSize: '12px', fontWeight: '600', color: '#F0EDE8' }}>{provider.name}</span><span style={{ fontSize: '10px', color: '#5A4A2A' }}>#{i + 1}</span></div>
@@ -1351,6 +1354,7 @@ export default function SectionPage() {
                   { id: 'upi', label: 'UPI / QR', icon: '📱', desc: 'GPay, PhonePe' },
                   { id: 'card', label: 'Cards', icon: '💳', desc: 'Debit / Credit' },
                   { id: 'netbanking', label: 'Net Banking', icon: '🏦', desc: 'All banks' },
+                  { id: 'cod', label: 'Cash on Delivery', icon: '💵', desc: 'Pay at door' },
                 ].map(method => (
                   <div key={method.id} onClick={() => { setPaymentTab(method.id); setFormErrors({}) }} style={{
                     padding: isMobile ? '8px 14px' : '12px 16px',
@@ -1458,6 +1462,23 @@ export default function SectionPage() {
                     ))}
                   </div>
                 </div>}
+
+                {/* Cash on Delivery */}
+                {paymentTab === 'cod' && <div>
+                  <div style={{ background: 'linear-gradient(135deg, #1A1810, #221E14)', border: '1px solid #4CAF5040', borderRadius: '14px', padding: '24px', textAlign: 'center' }}>
+                    <div style={{ fontSize: '48px', marginBottom: '12px' }}>💵</div>
+                    <div style={{ fontSize: '17px', fontWeight: '700', color: '#F0EDE8', marginBottom: '8px' }}>Cash on Delivery</div>
+                    <div style={{ fontSize: '13px', color: '#8A7A5A', lineHeight: '1.6', marginBottom: '16px' }}>Pay in cash when your order arrives at your doorstep. No online payment needed.</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {[{ icon: '✓', text: 'No advance payment' }, { icon: '✓', text: 'Pay when delivered' }, { icon: '✓', text: 'Exact change preferred' }].map((item, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: '#0A1F0A', border: '1px solid rgba(76,175,80,0.2)', borderRadius: '8px', padding: '10px 14px' }}>
+                          <span style={{ color: '#4CAF50', fontWeight: '700' }}>{item.icon}</span>
+                          <span style={{ fontSize: '13px', color: '#C8B88A' }}>{item.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>}
               </div>
             </div>
 
@@ -1470,7 +1491,7 @@ export default function SectionPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                 opacity: paymentProcessing ? 0.8 : 1, transition: 'all 0.2s ease',
               }} onMouseEnter={e => { if (!paymentProcessing) e.currentTarget.style.backgroundColor = '#388E3C' }} onMouseLeave={e => { if (!paymentProcessing) e.currentTarget.style.backgroundColor = '#2E7D32' }}>
-                {paymentProcessing ? (<><div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />Yukti is placing your order...</>) : (<>Pay ₹{getTotal()} to store <span style={{ opacity: 0.6, fontSize: '12px' }}>via Yukti</span></>)}
+                {paymentProcessing ? (<><div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />Yukti is placing your order...</>) : (<>{paymentTab === 'cod' ? `Confirm Order ₹${getTotal()} — Pay on Delivery` : `Pay ₹${getTotal()} to store`} <span style={{ opacity: 0.6, fontSize: '12px' }}>{paymentTab !== 'cod' && 'via Yukti'}</span></>)}
               </button>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
                 <button onClick={() => setCheckoutStep('address')} style={{ background: 'none', border: 'none', color: '#5A4A2A', fontSize: '11px', cursor: 'pointer' }}>← Change address</button>

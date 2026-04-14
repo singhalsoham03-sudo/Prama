@@ -306,7 +306,7 @@ export default function Home() {
                 )
               })}
               <div style={{ textAlign: 'center', marginTop: '8px' }}>
-                <button onClick={() => router.push('/quick-commerce')} style={{ background: 'linear-gradient(135deg, #2E7D32, #388E3C)', border: 'none', color: '#fff', padding: '12px 28px', borderRadius: '10px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s ease' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>Try it now — it's free →</button>
+                <button onClick={() => router.push('/quick-commerce')} style={{ background: 'linear-gradient(135deg, #2E7D32, #43A047)', border: 'none', color: '#fff', padding: '18px 48px', borderRadius: '14px', fontSize: '17px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.34,1.56,0.64,1)', letterSpacing: '0.3px', boxShadow: '0 8px 32px rgba(46,125,50,0.4), 0 0 0 1px rgba(76,175,80,0.3)', display: 'flex', alignItems: 'center', gap: '10px' }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px) scale(1.03)'; e.currentTarget.style.boxShadow = '0 16px 48px rgba(46,125,50,0.5), 0 0 0 1px rgba(76,175,80,0.4)' }} onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0) scale(1)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(46,125,50,0.4), 0 0 0 1px rgba(76,175,80,0.3)' }}>🚀 Try it free — it's on us <span style={{ fontSize: '20px' }}>→</span></button>
               </div>
             </div>
           </div>
